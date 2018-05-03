@@ -1,6 +1,6 @@
-In [Getting Started](Getting-Started.md) document, a new sample
+In the [Getting Started](Getting-Started.md) document, a new sample
 project is created named "**Acme.PhoneBook**". This document is a
-complete guide while developing your project.
+complete guide to developing your project.
 
 ### Project Types
 
