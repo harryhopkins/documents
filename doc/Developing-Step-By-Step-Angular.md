@@ -1030,7 +1030,7 @@ modal and added the **createPersonModal** component as an HTML tag
 ### Authorization For Phone Book
 
 At this point, anyone can use the phone book page since no authorization has been
-defined. We will define two permissions:
+defined. To fix this, we will define two permissions:
 
 -   A permission to **use the phone book page**.
 -   A permission to **create a new person** (which naturally is a child permission
@@ -1052,18 +1052,18 @@ string:
 
     public const string Pages_Tenant_PhoneBook = "Pages.Tenant.PhoneBook";
 
-Unique name of this permission is "**Pages.Tenant.PhoneBook**". While
+The unique name of this permission is "**Pages.Tenant.PhoneBook**". While
 you can set any string (as long as it's unique), it's suggested to use
-that convention. A permission can have a localizable display name:
-"**PhoneBook**" here. (See "Adding a New Page" section for more about
-localization, since it's very similar). Lastly, we set this as a
-**tenant** level permission.
+this convention. A permission can also have a localizable display name.
+In this case we chose "*PhoneBook**" (See "Adding a New Page" section for
+more about localization, since it's very similar). Lastly, we set this 
+permission as a **tenant** level permission.
 
 ##### Add AbpAuthorize attribute
 
-**AbpAuthorize** attribute can be used as **class level** or **method
-level** to protect an application service or service method from
-unauthorized users. Since all server side code is located in
+The **AbpAuthorize** attribute can be used at the **class** or **method** 
+level to protect an application service or service method from
+unauthorized requests. Since all server side code is located in
 PersonAppService class, we can declare a class level attribute as shown
 below:
 
@@ -1073,49 +1073,49 @@ below:
         //...
     }
 
-Now, let's try to enter Phone Book page by clicking the menu item:
+Now, let's try to enter the Phone Book page by clicking the menu item:
 
 <img src="images/phonebook-permission-error.png" alt="Permission error" class="img-thumbnail" width="505" height="412" />
 
 We get an error message. This exception is thrown when any method of
-PersonAppService is called without required permission.
+PersonAppService is called without the required permission.
 
 ##### Guard Angular Route
 
-We got an exception about permission. Server did not send the data but
-we can still enter the page. To prevent it, open
-**main-routing.module.ts** and change the route definition like that:
+Even though we got a permission exception and the server did not send the data, 
+we can still enter the page. To prevent this from happening, open **main-routing.module.ts** 
+and make the following changes to the route definition:
 
     { path: 'phonebook', component: PhoneBookComponent, data: { permission: 'Pages.Tenant.PhoneBook' } }
 
-**AuthRouteGuard** class automatically checks route permission data and
-prevents entering to the view if specified permission is not granted.
-Try to click Phone Book menu!
+The **AuthRouteGuard** class automatically checks the route permission data and
+prevents users from entering the view if the specified permission is not granted.
+Try to click the Phone Book menu now!
 
 ##### Hide Unauthorized Menu Item
 
-While user can not enter to the page, the menu item still there! We
-should also **hide** the Phone book **menu item**. It's easy, open
-**app-navigation-service.ts** and add change PhoneBook menu definition
+While the user can not enter to the page, the menu item is still there! We
+should also **hide** the Phone book **menu item**. This is easy to do.  Open
+**app-navigation-service.ts** and change the PhoneBook menu definition
 as shown below:
 
     new AppMenuItem("PhoneBook", 'Pages.Tenant.PhoneBook', "flaticon-book", "/app/main/phonebook")
 
 ##### Grant permission
 
-So, how we can enter the page now? Simple, go to **Role Management**
-page and edit **admin** role:
+So, how do we access the page now? Simple, go to the **Role Management** page and 
+edit the **admin** role:
 
 <img src="images/role-permissions-with-phonebook1.png" alt="Role permissions" class="img-thumbnail" />
 
-We see that a **new permission** named "**Phone book**" added to
-**permissions** tab. So, we can check it and save the role. After
+We see that a **new permission** named "**Phone book**" has been added 
+to **permissions** tab. So, we check it and then save the role. After
 saving, we need to **refresh** the whole page to refresh permissions for
 the current user. We could also grant this permission for a specific
 user (see [development guide document](Development-Guide.md) for
 details about roles and users).
 
-Now, we can enter the Phone book page again.
+Now, we can access the Phone book page again.
 
 #### Permission for Create New Person
 
@@ -1131,15 +1131,15 @@ class):
     var phoneBook = pages.CreateChildPermission(AppPermissions.Pages_Tenant_PhoneBook, L("PhoneBook"), multiTenancySides: MultiTenancySides.Tenant);
     phoneBook.CreateChildPermission(AppPermissions.Pages_Tenant_PhoneBook_CreatePerson, L("CreateNewPerson"), multiTenancySides: MultiTenancySides.Tenant);
 
-First permission was defined before. In the second line, we are creating
-a child permission of first one. Remember to create a constant in
+The first permission above is the parent permission. In the second line, we are creating
+a child permission of the parent. Remember to create a constant in the
 AppPermissions class:
 
     public const string Pages_Tenant_PhoneBook_CreatePerson = "Pages.Tenant.PhoneBook.CreatePerson";
 
 ##### Add AbpAuthorize Attribute
 
-This time, we're declaring **AbpAuthorize** attribute just for
+This time, we're applying the **AbpAuthorize** attribute only for the
 **CreatePerson** method:
 
     [AbpAuthorize(AppPermissions.Pages_Tenant_PhoneBook_CreatePerson)]
@@ -1151,17 +1151,17 @@ This time, we're declaring **AbpAuthorize** attribute just for
 ##### Hide Unauthorized Button
 
 If we run the application and try to create a person, we get an
-authorization error after clicking the save button. But, it's good to
-**completely hide Create New Person button** if we don't have the
-permission. It's very simple:
+authorization error after clicking the save button. But, shouldn't we
+**completely hide the Create New Person button** if the user doesn't have 
+the correct permission. It's very simple.  Just make the foolowing changes:
 
-Open the **phonebook.component.html** view and use **isGranted**
-condition as shown below:
+Open the **phonebook.component.html** view and use the **isGranted** condition 
+as shown below:
 
     <button *ngIf="isGranted('Pages.Tenant.PhoneBook.CreatePerson')" class="btn btn-primary" (click)="createPersonModal.show()"><i class="fa fa-plus"></i> {{l("CreateNewPerson")}}</button>
 
-In this way, the "Create New Person" button does not rendered in server
-and user can not see this button.
+In this way, the "Create New Person" button does not rendered in the UI
+and the user cannot see the button.
 
 ##### Grant permission
 
