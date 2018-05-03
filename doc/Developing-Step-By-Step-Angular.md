@@ -1,14 +1,14 @@
 ### Introduction
 
-In this document, we will create a sample **phonebook application**
-based on ASP.NET Zero (ASP.NET Core & Angular 5 version) step by step.
-After all steps, we will have a multi-tenant, localized, authorized,
-configurable, testable... appliaction.
+In this document, we will create, step by step, a sample **phonebook application**
+based on ASP.NET Zero (ASP.NET Core & Angular 5 version).
+At the end of these steps, we will have a multi-tenant, localized, authorized,
+configurable and testable... application.
 
 ### Creating And Running The Project
 
 We're creating and downloading the solution named
-"**Acme.PhoneBookDemo**" as described in [Getting
+"**Acme.PhoneBookDemo**" as described in the [Getting
 Started](Getting-Started-Angular.md) document. Please follow the
 getting started document, run the application, login as default tenant
 admin (select Default as tenancy name, use admin as username and 123qwe
@@ -32,32 +32,32 @@ project and disable multi-tenancy as shown below:
         public const int PaymentCacheDurationInMinutes = 30;
     }
 
-**Note:** If you loggeg in before changing **MultiTenancyEnabled** to
-false, you might be get login error. To overcome this, you should remove
-cookies.
+**Note:** If you try logging in before changing **MultiTenancyEnabled** to
+false, you might be get a login error. To resolve this, you should remove
+cookies associated with the new application.
 
 ### Adding a New Menu Item
 
-Let's begin from UI and create a new page named "**Phone book**".
+Let's begin with the UI and create a new page named "**Phone book**".
 
 #### Defining a Menu Item
 
 Open **src\\app\\shared\\layout\\nav\\app-navigation.service.ts** in the
-client side (**Acme.PhoneBookDemo.AngularUI**) which defines menu items
-in the application. Create new menu item as shown below (You can add it
+client side project (**Acme.PhoneBookDemo.AngularUI**) which defines the menu items
+in the application. Create a new menu item as shown below (You can add it
 right after the dashboard menu item).
 
     new AppMenuItem("PhoneBook", null, "flaticon-book", "/app/main/phonebook")
 
-**PhoneBook** is the menu name (will localize below), **null** is for
+**PhoneBook** is the menu name (will localize below), **null** is a placeholder for the 
 permission name (will set it later), **flaticon-book** is just an
 arbitrary icon class (from [this
 set](http://keenthemes.com/metronic/preview/?page=components/icons/flaticon&demo=default))
-and **/phonebook** is the Angular route.
+and **app/main/phonebook** is the Angular route.
 
-If you run the application, you can see a new menu item on the left
-menu, but it won't work (it redirect to default route) if you click to
-the menu item, since we haven't defined the Angular route yet.
+If you run the application, you can see a new menu item in the left
+menu.  But it will not work (it redirect to default route) if you click to
+the menu item, since we have not defined the Angular route yet.
 
 #### Localize Menu Item Display Name
 
@@ -71,29 +71,28 @@ dictionary) and add the following line:
 
     <text name="PhoneBook">Phone Book</text>
 
-If we don't define "PhoneBook"s value for other localization
-dictionaries, default value is shown in all languages. For example, we
-can define it also for Turkish in PhoneBookDmo-tr.xml file:
+If we don't define the "PhoneBook" value for other localization
+dictionaries, the default value is shown in all languages. For example, we
+can also define it for Turkish in the PhoneBookDmo-tr.xml file:
 
     <text name="PhoneBook">Telefon Rehberi</text>
 
-Note: Any change in server side (including change localization texts)
-requires recycle of the server application. We suggest to use Ctrl+F5 if
-you don't need to debugging for a faster startup. In that case, it's
-enough to make a re-build to recycle the application.
+Note: Any change in server side code (including changes to localization text)
+requires a recycle of the server application. If
+you don't need to debug, we suggest you use Ctrl+F5 for a faster startup. It will re-build and recycle the application.
 
 #### Angular Route
 
 Angular has a powerful URL routing system. ASP.NET Zero has defined
 routes in a few places (for modularity, see [dev
-guide](Development-Guide-Angular.md)). We want to add phone book page
+guide](Development-Guide-Angular.md)). We want to add the phone book page
 to the main module. So, open **src\\app\\main\\main-routing.module.ts**
-(in the client side) and add a new route just below to the dashboard:
+(in the client side) and add a new route just below the dashboard route:
 
     { path: 'phonebook', component: PhoneBookComponent }
 
-We get an error since we haven't defined PhoneBookComponent yet. Also,
-we ignored permission for now (will implement later).
+We will get an error since we haven't defined the PhoneBookComponent yet. Also,
+we are ignoring permission for now (will implement later).
 
 ### Creating the PhoneBookComponent
 
@@ -120,13 +119,13 @@ as shown below:
 
 We inherited from **AppComponentBase** which provides some common
 functions and fields (like localization and access control) for us. It's
-not required, but makes our job easier. Now, we can return back to
-**main-routing.module.ts** and add import statement for the newly
+not required, but makes our job easier. Now, we can go back to
+**main-routing.module.ts** and add an import statement for the newly
 created PhoneBookComponent class:
 
     import { PhoneBookComponent } from './phonebook/phonebook.component';
 
-As we declared in **phonebook.component.ts** we should create a
+As we declared in **phonebook.component.ts**, we should create a
 **phonebook.component.html** view in the same phonebook folder:
 
     <div [@routerTransition]>
@@ -148,12 +147,12 @@ As we declared in **phonebook.component.ts** we should create a
         </div>
     </div>
 
-**l** (lower case 'L') function comes from **AppComponentBase** and used
-to easily localize texts. **\[@routerTransition\]** attribute is
+**l** (lower case 'L') function comes from **AppComponentBase** and can be used
+to easily localize texts. The **\[@routerTransition\]** attribute is
 required for page transition animation.
 
 And finally, Angular requires to relate every component to a **module**.
-So, we are making the following changes on the **main.module.ts**:
+So, we are making the following changes to **main.module.ts**:
 
     import { NgModule } from '@angular/core';
     import { CommonModule } from '@angular/common';
@@ -185,21 +184,21 @@ So, we are making the following changes on the **main.module.ts**:
     })
     export class MainModule { }
 
-Added an **import** statement and added PhoneBookComponent to
+We Added an **import** statement and added PhoneBookComponent to the
 **declarations** array. Now, we can refresh the page to see the new
-added page:
+page we added:
 
 <img src="images/phonebook-empty-ng2.png" alt="Phonebook empty" class="img-thumbnail" style="width:100.0%" />
 
 Note: Angular-cli automatically re-compiles and refreshes the page when
-any changes made to any file in the application.
+any changes are made to any file in the application.
 
 ### Creating Person Entity
 
-We define entities in **.Core** (domain) project (in server side). We
+We define entities in the **.Core** (domain) project (in server side). We
 can define a **Person** entity (mapped to **PbPersons** table in
-database) to represent a person in phone book as shown below (I created
-in in a new folder/namespace named PhoneBook):
+database) to represent a person in the phone book as shown below (I created
+it in a new folder/namespace named PhoneBook):
 
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
@@ -228,18 +227,17 @@ in in a new folder/namespace named PhoneBook):
     }
 
 Person's **primary key** type is **int** (as default). It inherits
-**FullAuditedEntity** that contains **creation**, **modification** and
-**deletion** audit properties. It's also **soft-delete**. When we delete
-a person, it's not deleted by database but marked as deleted (see
+**FullAuditedEntity** which contains **creation**, **modification** and
+**deletion** audit properties. It also has **soft-delete**. With **soft-delete**, when we delete
+a person, it's not deleted in the database but marked as deleted (see
 [entity](https://aspnetboilerplate.com/Pages/Documents/Entities) and
 [data
-filters](https://aspnetboilerplate.com/Pages/Documents/Data-Filters)
-documentations for more information). We created consts for
-**MaxLength** properties. This is a good practice since we will use same
+filters](https://aspnetboilerplate.com/Pages/Documents/Data-Filters) for more information). We created consts for
+**MaxLength** properties. This is a good practice since we will use the same
 values later.
 
-We add a DbSet property for Person entity to **PhoneBookDemoDbContext**
-class defined in **.EntityFrameworkCore** project.
+We need to add a DbSet property for Person entity to **PhoneBookDemoDbContext**
+class defined in the **.EntityFrameworkCore** project.
 
     public class PhoneBookDemoDbContext : AbpZeroDbContext<Tenant, Role, User>
     {
@@ -251,7 +249,7 @@ class defined in **.EntityFrameworkCore** project.
 ### Database Migrations
 
 We use **EntityFramework Code-First migrations** to migrate database
-schema. Since we added **Person entity**, our DbContext model is
+schemas. Since we added **Person entity**, our DbContext model has
 changed. So, we should create a **new migration** to create the new
 table in the database.
 
@@ -297,20 +295,20 @@ This command will add a **migration class** named
         }
     }
 
-We don't have to know so much about format and rules of this file. But,
+We don't have to know too much about the format or rules of this file, but 
 it's suggested to have a basic understanding of migrations. In the same
-Package Manager Console, we write **Update-Database** command in order
-to apply the new migration to database. After updating, we can see that
+Package Manager Console, we run the **Update-Database** command in order
+to apply the new migration to the database. After updating, we can see that the
 **PbPersons table** is added to database.
 
 <img src="images/phonebook-tables-spa.png" alt="Phonebook tables" class="img-thumbnail" />
 
-But this new table is empty. In ASP.NET Zero, there are some classes to
+For now, the new table is empty. In ASP.NET Zero, there are some classes to
 fill initial data for users and settings:
 
 <img src="images/aspnet-core-ef-seed-1.png" alt="Seed folders" class="img-thumbnail" />
 
-So, we can add a separated class to fill some people to database as
+So, we can add a separate class to populate some people in the database as
 shown below:
 
     namespace Acme.PhoneBookDemo.Migrations.Seed.Host
@@ -353,12 +351,12 @@ shown below:
         }
     }
 
-These type of default data is good since we can also use these data in
-**unit tests**. Surely, we should be careful about seed data since this
+This type of default data is good since we can also use this data in
+**unit tests**. However, we should be careful about seed data since this
 code will always be executed in each **PostInitialize** of your
 PhoneBookEntityFrameworkCoreModule. This class (InitialPeopleCreator) is
-created and called in **InitialHostDbBuilder** class. This is not so
-important, just for a good code organization (see source codes).
+created and called in the **InitialHostDbBuilder** class. This is not so
+important, just good code organization (see source codes).
 
     public class InitialHostDbBuilder
     {
@@ -373,19 +371,19 @@ important, just for a good code organization (see source codes).
         }
     }
 
-We run our project again, it runs seed and adds two people to PbPersons
+Now when we run our project again, it runs the seed process and adds two people to PbPersons
 table:
 
 <img src="images/phonebook-persons-table-initial-data.png" alt="Persons initial data" class="img-thumbnail" width="720" height="50" />
 
 ### Creating Person Application Service
 
-An Application Service is used from client (presentation layer) to
-perform operations (use cases) of the application.
+An Application Service is used by clients (presentation layer) to
+perform operations (use cases) in the application.
 
 Application service interface and DTOs are located in
-**.Application.Shared** project. We creating an application service to
-get people from server. So, we're first creating an **interface** to
+**.Application.Shared** project. We are creating an application service to
+get people from the server. So, first we need to create an **interface** to
 define the person application service (while this interface is optional,
 we suggest you to create it):
 
@@ -402,7 +400,7 @@ we suggest you to create it):
 
 An application service method gets/returns **DTO**s. **ListResultDto**
 is a pre-build helper DTO to return a list of another DTO.
-**GetPeopleInput** is a DTO to pass request parameters to **GetPeople**
+**GetPeopleInput** is a DTO to pass request parameters to the **GetPeople**
 method. So, GetPeopleIntput and PersonListDto are defined as shown
 below:
 
@@ -420,13 +418,13 @@ below:
         public string EmailAddress { get; set; }
     }
 
-**CustomDtoMapper.cs** is used to create mapping from **Person** to
+**CustomDtoMapper.cs** is used to create the mapping from **Person** to
 **PersonListDto**. **FullAuditedEntityDto** is inherited to
 implement audit properties automatically. See [application
 service](https://aspnetboilerplate.com/Pages/Documents/Application-Services)
 and
-[DTO](https://aspnetboilerplate.com/Pages/Documents/Data-Transfer-Objects)
-documentations for more information. We are adding the following mappings.
+[DTO](https://aspnetboilerplate.com/Pages/Documents/Data-Transfer-Objects) 
+for more information. We need to add the following mappings.
 
     ...
     // PhoneBook (we will comment out other lines when the new DTOs are added)
@@ -436,7 +434,7 @@ documentations for more information. We are adding the following mappings.
     //configuration.CreateMap<Person, GetPersonForEditOutput>();
     //configuration.CreateMap<Phone, PhoneInPersonListDto>();
 
-After defining interface, we can implement it as shown below: (in
+After defining the interface, we can implement it as shown below: (in
 **.Application** project)
 
     public class PersonAppService : PhoneBookDemoAppServiceBase, IPersonAppService
