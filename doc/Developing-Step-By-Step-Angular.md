@@ -61,7 +61,7 @@ the menu item, since we have not defined the Angular route yet.
 
 #### Localize Menu Item Display Name
 
-Localization strings are defined in **XML** files in **.Core** project
+Localization strings are defined in **XML** files in the **.Core** project
 (in server side) as shown below:
 
 <img src="images/localization-files-4.png" alt="Localization files" class="img-thumbnail" />
@@ -381,7 +381,7 @@ table:
 An Application Service is used by clients (presentation layer) to
 perform operations (use cases) in the application.
 
-Application service interface and DTOs are located in
+Application service interfaces and DTOs are located in the
 **.Application.Shared** project. We are creating an application service to
 get people from the server. So, first we need to create an **interface** to
 define the person application service (while this interface is optional,
@@ -424,7 +424,7 @@ implement audit properties automatically. See [application
 service](https://aspnetboilerplate.com/Pages/Documents/Application-Services)
 and
 [DTO](https://aspnetboilerplate.com/Pages/Documents/Data-Transfer-Objects) 
-for more information. We need to add the following mappings.
+for more information. We need to add the following mappings:
 
     ...
     // PhoneBook (we will comment out other lines when the new DTOs are added)
@@ -465,52 +465,52 @@ After defining the interface, we can implement it as shown below: (in
     }
 
 We're injecting **person repository** (it's automatically created by
-ABP) and using it to filter and get people from database.
+ABP) and using it to filter and get people from the database.
 
 **WhereIf** is an extension method here (defined in Abp.Linq.Extensions
-namespace). It performs Where condition, only if filter is not null or
+namespace). It performs a where condition, only if the filter is not null or
 empty. **IsNullOrEmpty** is also an extension method (defined in
 Abp.Extensions namespace). ABP has many similar shortcut extension
-methods. **ObjectMapper.Map** method automatically converts list of
-Person entities to list of PersonListDto objects with using
-configurations in **CustomDtoMapper.cs** in **.Application** project.
+methods. **ObjectMapper.Map** method automatically converts a list of
+Person entities to a list of PersonListDto objects using
+configurations defined in **CustomDtoMapper.cs** in the **.Application** project.
 
 #### Connection & Transaction Management
 
-We don't manually open database connection or start/commit transactions
-manually. It's automatically done with ABP framework's Unit Of Work
+We don't manually open database connection or start/commit transactions. 
+They are automatically done with ABP framework's Unit Of Work
 system. See [UOW
 documentation](https://aspnetboilerplate.com/Pages/Documents/Unit-Of-Work)
-for more.
+for more information.
 
 #### Exception Handling
 
 We don't handle exceptions manually (using a try-catch block). Because
-ABP framework automatically handles all exceptions on the web layer and
-returns appropriate error messages to the client. It then handles errors
-on the client and shows needed error information to the user. See
+the ABP framework automatically handles all exceptions in the web layer and
+returns appropriate error messages to the client, it then processes errors
+on the client and shows the error information to the user. See
 [exception handling
 document](https://aspnetboilerplate.com/Pages/Documents/Handling-Exceptions)
-for more.
+for more information.
 
 ### Creating Unit Tests For PersonAppService
 
-You can skip this section if you don't interest in **automated
+You can skip this section if you have no interest in **automated
 testing**.
 
-By writing unit test, we can test **PersonAppService.GetPeople** method
-without creating a user interface. We write unit test in .**Tests**
+By writing a unit test, we can test the **PersonAppService.GetPeople** method
+without creating a user interface. We will write the unit test in the .**Tests**
 project in the solution.
 
 #### MultiTenancy In Tests
 
-Since we disabled multitenancy, we should disable it for unit tests too.
-Open **PhoneBookDemoConsts** class in the Acme.PhoneBook.Core project
-and set "**MultiTenancyEnabled**" to false. After a rebuild and run unit
-tests, you will see that some tests are skipped (those are related to
+Since we disabled multitenancy, we should also disable it for unit tests.
+Open the **PhoneBookDemoConsts** class in the Acme.PhoneBook.Core project
+and set "**MultiTenancyEnabled**" to false. After a rebuild, run unit
+tests and you will see that some tests are skipped (those are related to
 multitenancy).
 
-Let's create first test to verify getting people without any filter:
+Let's create our first test to verify getting people without any filter:
 
     using Acme.PhoneBookDemo.People;
     using Acme.PhoneBookDemo.People.Dtos;
@@ -540,21 +540,21 @@ Let's create first test to verify getting people without any filter:
         }
     }
 
-We derived test class from **AppTestBase**. AppTestBase class
-initializes all system, creates an in-memory fake database, seeds
-initial data (that we created before) to database and logins to
+We derived the test class from **AppTestBase**. The AppTestBase class
+initializes the system, creates an in-memory fake database, seeds
+initial data (that we created before) to the database and logs into to
 application as admin. So, this is actually an **integration test** since
-it tests all server-side code from entity framework mapping to
+it tests all server-side code ranging from entity framework mapping to
 application services, validation and authorization.
 
-In constructor, we get (resolve) an **IPersonAppService** from
+In the constructor, we get (resolve) an **IPersonAppService** from the 
 **dependency injection** container. It creates the **PersonAppService**
-class with all dependencies. Then we can use it in test methods.
+class with all of the dependencies. Then we can use it in test methods.
 
-Since we're using [xUnit](http://xunit.github.io/), we add **Fact**
-attribute to each test method. In the test method, we called
-**GetPeople** method and checked if there are **two people** in the
-returned list as we know that there were 2 people in **initial**
+Since we're using [xUnit](http://xunit.github.io/), we add the **Fact**
+attribute to each test method. In the test method, we called the
+**GetPeople** method and checked to see if there are **two people** in the
+returned list as we know that there are 2 people in **initial**
 database.
 
 Let's run the **all unit tests** in Test Explorer and see if it works:
@@ -581,27 +581,27 @@ test to get filtered people:
         persons.Items[0].Surname.ShouldBe("Adams");
     }
 
-Again, since we know initial database, we can check returned results
-easily. Here, initial test data is important. When we change initial
-data, our test may fail even if our services are correct. So, it's
-better to write unit tests independent of initial data as much as
-possible. We could check incoming data to see if every people contains
+Again, since we know the initial database, we can check the returned results
+easily. Here, the initial test data is important. When we change the initial
+data, our tests may fail even if our services are correct. So, it's
+better to write unit tests independent of the initial data as much as
+possible. We could check incoming data to see if every person contains
 "adams" in his/her name, surname or email. Thus, if we add new people to
-initial data, our tests remain working.
+the initial data, our unit tests will still work.
 
-There are many techniques on unit testing, I kept it simple here. But
-ASP.NET Zero template makes very easy to write unit and integration
+There are many techniques to unit testing. I kept it simple here. But
+the ASP.NET Zero template makes it very easy to write unit and integration
 tests by base classes and pre-build test codes. 
 
 ### Using GetPeople Method From Angular Component
 
-Now, we can switch to the client side and use GetPeople method to show a
-list of people on the UI.
+Now, we can switch to the client side and use the GetPeople method to show a
+list of people in the UI.
 
 #### Service Proxy Generation
 
-First, run (prefer Ctrl+F5 to be faster) the server side application
-(.Web.Host project). Then run **nswag/refresh.bat** file on the client
+First, run (prefer Ctrl+F5 because it is faster) the server side application
+(.Web.Host project). Then run the **nswag/refresh.bat** file on the client
 side to re-generate service proxy classes (they are used to call server
 side service methods).
 
@@ -613,12 +613,12 @@ existing service, it's not needed.
 
 #### Angular-Cli Watcher
 
-Sometimes angular-cli can not understand the file changes. In that case,
-stop it and re-run **npm start** command.
+Sometimes angular-cli cannot understand file changes. When this happens,
+stop it and re-run the **npm start** command.
 
 #### PhoneBookComponent Typescript Class
 
-Change **phonebook.component.ts** as like below:
+Change **phonebook.component.ts** as shown below:
 
     import { Component, Injector, OnInit } from '@angular/core';
     import { AppComponentBase } from '@shared/common/app-component-base';
@@ -653,13 +653,13 @@ Change **phonebook.component.ts** as like below:
     }
 
 We inject **PersonServiceProxy**, call its **getPeople** method and
-**subscribe** to get the result. We do this in **ngOnInit** function
-(defined in Angular's **OnInit** interface). Assigned returned items to
+**subscribe** to get the result. We do this in the **ngOnInit** function
+(defined in Angular's **OnInit** interface). Then we assign the returned items to
 the **people** class member.
 
 #### Rendering People In Angular View
 
-Now, we can use this people member from the view,
+Now, we can use the people member for the view,
 **phonebook.component.html**:
 
     <div [@routerTransition]>
@@ -693,36 +693,36 @@ Now, we can use this people member from the view,
         </div>
     </div>
 
-We simply used **ngFor** directive to loop and render people data. See
+We simply used the **ngFor** directive to loop and render the people data. Here is
 the result:
 
 <img src="images/phonebook-people-view-2.png" alt="Phonebook peoples" class="img-thumbnail" />
 
-We successfully retrieved list of people from database to the page.
+We have successfully retrieved the list of people from the database to the page.
 
 #### About Showing Tabular Data
 
 We normally use a javascript based rich table/grid library to show
-tabular data, instead of manually rendering data like that. For example,
-we used [jTable](http://jtable.org/) library to show users on the Users
-page of ASP.NET Zero. Always use such components since they make things
-much more easier and provides a much better user experience.
+tabular data, instead of manually rendering data using HTML. For example,
+we used the [jTable](http://jtable.org/) library to show users on the Users
+page of ASP.NET Zero. Consider using such components since they make things
+much easier and provide a much better user experience.
 
-We did not use a table component here, because we want to show basics of
-Angular instead of going details of a 3rd party library.
+We did not use a table component here, because we wanted to show the basics of
+Angular instead of going into the details of a 3rd party library.
 
 ### Creating a New Person
 
-Next step is to create a modal to add a new item to phone book.
+Next step is to create a modal to add a new item to the phone book.
 
 #### Add a CreatePerson Method to PersonAppService
 
-We first define **CreatePerson** method in **IPersonAppService**
+We first define the **CreatePerson** method in the **IPersonAppService**
 interface:
 
     Task CreatePerson(CreatePersonInput input);
 
-Then we create **CreatePersonInput** DTO that defines parameters of the
+Then we create the **CreatePersonInput** DTO that defines the parameters of the
 method:
 
     public class CreatePersonInput
@@ -740,14 +740,14 @@ method:
         public string EmailAddress { get; set; }
     }
 
-**CreatePersonInput** is mapped to **Person** entity (comment out
-related line in CustomDtoMapper.cs and we will use mapping below).
+**CreatePersonInput** is mapped to the **Person** entity (comment out
+the related line in CustomDtoMapper.cs and we will use mapping below).
 All properties are decorated with **data annotation attributes**
 to provide automatic
 **[validation](https://aspnetboilerplate.com/Pages/Documents/Validating-Data-Transfer-Objects)**.
-Notice that we use same consts defined in **PersonConsts.cs** in
-**.Core.Shared** project for **MaxLength** properties. After adding this
-class, you can remove consts from **Person** entity and use this new
+Notice that we use the same consts defined in **PersonConsts.cs** in
+the **.Core.Shared** project for **MaxLength** properties. After adding this
+class, you can remove consts from the **Person** entity and use this new
 consts class.
 
     public class PersonConsts
@@ -757,7 +757,7 @@ consts class.
         public const int MaxEmailAddressLength = 255;
     }
 
-Here, the implementation of CreatePerson method:
+Here is the implementation of the CreatePerson method:
 
     public async Task CreatePerson(CreatePersonInput input)
     {
@@ -765,17 +765,17 @@ Here, the implementation of CreatePerson method:
         await _personRepository.InsertAsync(person);
     }
 
-A Person entity is created by mapping given input, then inserted to
-database. We used **async/await** pattern here. All methods in ASP.NET
-Zero startup project is **async**. It's advised to use async/await
+A Person entity is created by mapping the provided input and then inserting into
+the database. We used the **async/await** pattern here. All methods in ASP.NET
+Zero startup project are **async**. It's advised to use async/await
 wherever possible.
 
 #### Test CreatePerson Method
 
-You can skip this section if you don't interest in **automated
+You can skip this section if you are not interested in **automated
 testing**.
 
-We can create a unit test method to test CreatePerson method as shown
+We can create a unit test method to test the CreatePerson method as shown
 below:
 
     [Fact]
@@ -800,12 +800,12 @@ below:
             });
     }
 
-Test method also written using **async/await** pattern since calling
-method is async. We called CreatePerson method, then checked if given
-person is in the database. **UsingDbContext** method is a helper method
-of **AppTestBase** class (which we inherited this unit test class from).
-It's used to easily get a reference to DbContext and use it directly to
-perform database operations.
+The test method is also written using the **async/await** pattern since
+the calling method is async.  Next, we called the CreatePerson method, 
+then checked if the provided person is in the database. The **UsingDbContext** 
+method is a helper method of **AppTestBase** class (which we inherited 
+this unit test class from). It's used to easily get a reference to DbContext 
+and use it directly to perform database operations.
 
 This method successfully works since all required fields are supplied.
 Let's try to create a test for **invalid arguments**:
@@ -825,9 +825,9 @@ Let's try to create a test for **invalid arguments**:
                     });
     }
 
-We did not set **Surname** property of CreatePersonInput despite it being
-**required**. So, it throws **AbpValidationException** automatically.
-Also, we can not send null to CreatePerson method since validation
+We did not set the **Surname** property of CreatePersonInput despite it being
+**required**. So, it throws the **AbpValidationException** automatically.
+Also, we cannot send null to the CreatePerson method since the validation
 system also checks it. This test calls CreatePerson with invalid
 arguments and asserts that it throws AbpValidationException. See
 [validation
@@ -839,18 +839,18 @@ for more information.
 We will create a Bootstrap Modal to create a new person. ASP.NET Zero
 uses [ngx-bootstrap](https://github.com/valor-software/ngx-bootstrap)
 library to create modals (you can use another library, but we will use
-it in this sample too). Final modal will be like below:
+it in this sample). Final modal should look like this.
 
 <img src="images/phonebook-create-person-dialog1.png" alt="Create Person Dialog" class="img-thumbnail" />
 
 First of all, we should use **nswag/refresh.bat** to re-generate
-service-proxies. This will generate the code that is needed to call
-PersonAppService.**CreatePerson** method from client side. Notice that
+service-proxies. This will generate the code that is needed to call the
+PersonAppService.**CreatePerson** method from the client. Notice that
 you should rebuild & run the server side application before
 re-generating the proxy scripts.
 
-We are starting from creating a new component, named
-**create-person-modal.component.ts** into client side phonebook folder:
+We will start by creating a new component, named
+**create-person-modal.component.ts** in the client side phonebook folder:
 
     import { Component, ViewChild, Injector, ElementRef, Output, EventEmitter } from '@angular/core';
     import { ModalDirective } from 'ngx-bootstrap';
@@ -909,9 +909,9 @@ We are starting from creating a new component, named
 
 Let me explain some parts of this class:
 
--   It has a selector, **createPersonModal**, which will be used as like
+-   It has a selector, **createPersonModal**, which will be used like
     an HTML element in the person list page.
--   It extends **AppComponentBase** to take advantage of it (defines
+-   It extends **AppComponentBase** to take advantage of helper methods (defines
     this.l and this.notify in this sample).
 -   Defines an event, **modalSave**, which is triggered when we
     successfully save the modal. Thus, the main page will be informed
@@ -920,10 +920,10 @@ Let me explain some parts of this class:
     access some elements in the view.
 -   Injects **PersonServiceProxy** to call server side method while
     creating the person.
--   It focuses to **name** input when modal is shown.
+-   It sets the focus on the **name** input when the modal is shown.
 
 The code is simple and easy to understand except a small hack: an active
-flag is used to reset validation for Angular view (explained in
+flag is used to reset validation for the Angular view (explained in
 angular's
 [documentation](https://angular.io/docs/ts/latest/cookbook/form-validation.html)).
 
@@ -966,10 +966,10 @@ below:
         </div>
     </div>
 
-Most of this code is similar for all modals. The important part is how
-we binded model to the view using ngModel directive. As like all
-components, Angular requires to relate it to a module. We should it to
-**declarations** array of **main.module.ts** as like shown below:
+Most of this code is the same for all modals. The important part is how
+we bound the model to the view using the ngModel directive. Like all
+components, Angular requires it to be related to a module. We should add it to the
+**declarations** array of **main.module.ts** as shown below:
 
     ...previous imports
     import { CreatePersonModalComponent } from './phonebook/create-person-modal.component';
@@ -986,8 +986,8 @@ components, Angular requires to relate it to a module. We should it to
     })
     export class MainModule { }
 
-We need to put a "Create new person" button to the 'people list page' to
-open the modal when clicked to the button. To do that, we made the
+We need to add a "Create new person" button to the 'people list page' to
+open the modal when clicking on the button. To do that, we made the
 following changes in **phonebook.component.html**:
 
     <div [@routerTransition]>
@@ -1024,18 +1024,17 @@ following changes in **phonebook.component.html**:
     </div>
 
 Made some minor changes in the view; Added a **button** to open the
-modal and the **createPersonModal** component as like another HTML tag
-(which matches to the selector in the
-**create-person-modal.component.ts**).
+modal and added the **createPersonModal** component as an HTML tag
+(which matches to the selector in **create-person-modal.component.ts**).
 
 ### Authorization For Phone Book
 
-At this point, anyone can enter phone book page since no authorization
-defined. We will define two permission:
+At this point, anyone can use the phone book page since no authorization has been
+defined. We will define two permissions:
 
--   A permission to **enter phone book page**.
--   A permission to **create new person** (which is a child permission
-    of first one, as naturally).
+-   A permission to **use the phone book page**.
+-   A permission to **create a new person** (which naturally is a child permission
+    of first one).
 
 #### Permission for Entering Phone Book Page
 
